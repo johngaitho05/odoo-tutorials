@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <templates>
+    <t t-name="awesome_dashboard.NumberCard">
+        <p class="text-center" t-esc="props.title"/>
+        <h2 style="color: green;text-align: center; font-size: 26px" t-esc="props.value"/>
+    </t>
+
+    <t t-name="awesome_dashboard.PieChartCard">
+        <PieChart data="props.data"/>
+    </t>
 
     <t t-name="awesome_dashboard.AwesomeDashboard">
         <Layout display="{ controlPanel: {} }" className="'o_dashboard h-100'">
@@ -11,29 +19,12 @@
             </t>
 
             <div class="d-flex vertical-baseline flex-wrap">
-                <DashboardItem>
-                    <p class="text-center">Average amount of t-shirt by order this month</p>
-                    <h2 style="color: green;text-align: center; font-size: 26px"><t t-out="data.average_quantity"/></h2>
-                </DashboardItem>
-                <DashboardItem>
-                    <p class="text-center">Average time for an order to go from ‘new’ to ‘sent’ or ‘cancelled’</p>
-                    <h2 style="color: green;text-align: center; font-size: 26px"><t t-out="data.average_time"/></h2>
-                </DashboardItem>
-                <DashboardItem>
-                    <p class="text-center">Number of new orders this month</p>
-                    <h2 style="color: green;text-align: center; font-size: 26px"><t t-out="data.nb_new_orders"/></h2>
-                </DashboardItem>
-                <DashboardItem>
-                    <p class="text-center">Number of cancelled orders this month</p>
-                    <h2 style="color: green;text-align: center; font-size: 26px"><t t-out="data.nb_cancelled_orders"/></h2>
-                </DashboardItem>
-                <DashboardItem>
-                    <p class="text-center">Total amount of new orders this month</p>
-                    <h2 style="color: green;text-align: center; font-size: 26px"><t t-out="data.total_amount"/></h2>
-                </DashboardItem>
-                <DashboardItem size="2">
-                    <PieChart data="data.orders_by_size"/>
-                </DashboardItem>
+                <t t-foreach="items" t-as="item" t-key="item.id">
+                    <DashboardItem size="item.size || 1">
+                        <t t-set="itemProp" t-value="item.props ? item.props(statistics) : {'data': statistics}"/>
+                        <t t-component="item.Component" t-props="itemProp" />
+                    </DashboardItem>
+                </t>
             </div>
         </Layout>
     </t>
